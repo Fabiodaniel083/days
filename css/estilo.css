@@ -1,0 +1,118 @@
+body, html {
+    margin: 0%;
+    padding: 0%;
+    height: 100%;
+  
+}
+
+body {
+    width: 100%;
+    height: 100%;
+ 
+}   
+
+@font-face {
+    font-family: 'ink-free';
+    src: url('../font/ink-free.ttf') format('truetype');
+    font-size: medium;
+
+    /* Ajusta la ruta según la ubicación real de tus fuentes */
+}
+
+@font-face {
+    font-family: 'nexa';
+    src: url('../font/Nexa-Heavy.ttf') format('truetype');
+    font-size: medium;
+}
+
+@font-face {
+    font-family: 'guidelines';
+    src: url('../font/r-c-guidelines-full.ttf') format('truetype');
+    font-size: medium;
+}
+
+
+
+
+@media (max-width: 767px){  /* Color de fondo para pantallas pequeñas */
+    /*.titulo {
+        color: blueviolet;
+    }*/
+    
+}
+
+@media (min-width: 768px){ /* Color de fondo para pantallas medianas */
+    /*.titulo {
+    color: #ff0000;
+    }*/
+}
+
+.texto {
+    font-family: 'ink-free';
+}
+
+
+
+.titulo {
+    font-family: 'nexa';
+    /*border: blueviolet 2px solid;*/
+}
+
+
+
+/* ESTILO PAGINA DE SERVICIOS
+*/
+
+.boton_enviar{
+    border: solid black 2px;
+}
+
+
+/*inicio del footer*/
+
+.footer {
+    height: 20px;
+    margin-top: 30px;
+    font-family: 'ink-free', sans-serif;
+    background-color: rgb(223, 220, 220);
+    flex-shrink: 0;
+   
+}
+
+/*INICIO SECCION DE LA PAGINA ADMINISTRACION*/
+
+
+/* FINAL SECCION DE LA PAGINA ADMINISTRACION*/
+
+.form_general{
+    display: block; 
+    padding-left: 10px;
+}
+
+.form_general_servicios{
+    width: 100%;
+    padding-left: 10px;
+}
+
+.buscador-formulario {
+  width: 50%;    
+}
+
+
+.form_delitos {
+    margin-left: 20px;
+   
+}
+
+.tam_formulario
+
+
+.debug {
+    border: rgb(32, 3, 3) 2px solid;
+}
+
+.debug2 {
+    border: rgb(81, 230, 12) 2px solid;
+}
+
+

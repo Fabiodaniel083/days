@@ -1,0 +1,254 @@
+<?php
+    $host = "127.0.0.1";
+    $port = "5433";
+    $dbname = "daysDB";
+    $username = "admin";
+    $password = "admin";
+
+    try {
+        $conn = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $username, $password);
+        echo ('Conexión exitosa');
+    } catch (PDOException $exp) {
+        echo ("Error de conexión a la base de datos: " . $exp->getMessage());
+    }
+
+    // Consulta SQL para obtener solo la columna geom de la tabla Servicios
+    $query = "SELECT \"ID\", geom FROM public.\"SERVICIOS\""; // Usa comillas dobles para nombres de tabla sensibles a mayúsculas/minúsculas
+
+    $result = $conn->query($query);
+
+    // Crear un arreglo para almacenar datos GeoJSON
+    $geojson = [
+        'type' => 'FeatureCollection',
+        'features' => []
+    ];
+
+    // Iterar sobre los resultados y construir objetos GeoJSON
+    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        // Crear un objeto Feature para cada registro
+        $feature = [
+            'type' => 'Feature',
+            'geometry' => json_decode($row['geom']) // Asegúrate de que la columna geom sea un formato JSON válido
+        ];
+
+        // Agregar el Feature al arreglo de features en el objeto GeoJSON
+        $geojson['features'][] = $feature;
+    }
+
+    // Convertir el arreglo a formato JSON
+    $geojson_string = json_encode($geojson);
+    ?>
+
+
+
+
+
+
+
+<?php // ENVIO DEL FORMULARIO DE CARGA DE SERVICIO  
+                if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["enviar_servicio"])) {
+                  // Aquí procesas los datos del formulario
+                  $ser_orden = $_POST["ser_orden"];
+                  $ser_anio = $_POST["ser_anio"];
+                  $ser_reemp_a = $_POST["ser_reemp_a"];
+                  $ser_vigen_desde = $_POST["ser_vigen_desde"];
+                  $ser_vigen_hasta = $_POST["ser_vigen_hasta"];
+                  $ser_finalizado = isset($_POST["ser_finalizado"]) ? ($_POST["ser_finalizado"] === "true" ? "SI" : "NO") : "NO";
+                   // Si el checkbox está marcado, $ser_finalizado será "SI", de lo contrario, será "NO"
+                  $ser_titulo_orden = $_POST["ser_titulo_orden"];
+                  $ser_mision = $_POST["ser_mision"];
+                  $ser_lugar = $_POST["ser_lugar"];
+                  $ser_prob_atiende = $_POST["ser_prob_atiende"];
+                  $ser_recursos = $_POST["ser_recursos"];
+                  $ser_func_respon = $_POST["ser_func_respon"];
+              
+                  // Aquí llamas a la función para insertar los datos en la base de datos
+                  include_once 'conexion.php';
+                  conexion::insertarDatosServicios($ser_orden, $ser_anio, $ser_reemp_a, $ser_vigen_desde, $ser_vigen_hasta, $ser_finalizado, $ser_titulo_orden, $ser_mision, $ser_lugar, $ser_prob_atiende, $ser_recursos, $ser_func_respon);
+              }
+                   ?>
+
+
+
+
+
+
+
+<div class="">
+   <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+    <div class="container">
+      <div class="row">
+        <div class="col mb-3">
+         <label for="ser_anio" class="form-label">Año del Servicio: </label>
+         <input type="number" class="form-control" name="ser_anio" id="ser_anio">
+        </div>
+
+        <div class="col mb-3">
+         <label for="ser_orden" class="form-label">Numero de Servicio: </label>
+         <input type="number" class="form-control" name="ser_orden" id="ser_orden" aria-describedby="Número de orden">  
+        </div>
+
+        <div class="col mb-3">
+         <label for="ser_titulo_orden" class="form-label">Título de la Orden de Servicio: </label>
+         <input type="text" class="form-control" name="ser_titulo_orden" id="ser_titulo_orden">   
+        </div>
+
+        <div class="col mb-3">
+         <label for="ser_reemp_a" class="form-label">Esta orden reemplaza a: </label>
+         <input type="text" class="form-control" name="ser_reemp_a" id="ser_reemp_a">  
+        </div>
+
+      </div>
+
+      <div class="row">
+        
+        <div class="col mb-3">
+         <label for="ser_lugar" class="form-label">Lugar del Servicio: </label>
+         <input type="text" class="form-control" name="ser_lugar" id="ser_lugar">
+        </div>
+
+        <div class="col mb-3">
+         <label for="ser_vigen_desde" class="form-label">Vigencia desde: </label>
+         <input type="date" class="form-control" name="ser_vigen_desde" id="ser_vigen_desde">
+        </div>
+
+        <div class="col mb-3">
+         <label for="ser_vigen_hasta" class="form-label">Vigencia hasta: </label>
+         <input type="date" class="form-control" name="ser_vigen_hasta" id="ser_vigen_hasta">  
+        </div>
+     </div>
+
+     <div class="row">
+
+      <div class="col mb-3">
+        <label for="ser_prob_atiende" class="form-label">Problematica que atiende el Servicio: </label>
+        <input type="text" class="form-control" name="ser_prob_atiende" id="ser_prob_atiende">
+      </div>
+
+      <div class="col mb-3">
+       <label for="ser_mision" class="form-label">Mision del Servicio: </label>
+       <input type="text" class="form-control" name="ser_mision" id="ser_mision">
+      </div>
+
+      <div class="col mb-3">
+       <label for="ser_recursos" class="form-label">Recursos que afecta el servicio: </label>
+       <input type="text" class="form-control" name="ser_recursos" id="ser_recursos">
+     </div> 
+
+     </div>
+
+     <div class="row">
+      <div class="col mb-3">
+       <label for="ser_func_respon" class="form-label">Funcionarios responsables del servicio: </label>
+       <input type="text" class="form-control" name="ser_func_respon" id="ser_func_respon">
+      </div>
+     </div>
+     
+
+     <div class="col mb-3">
+       <label for="ser_finalizado" class="form-label">Servicio Finalizado Si/No:</label>
+       <input type="checkbox" class="form-check-input" name="ser_finalizado" id="ser_finalizado" value="true">
+      </div>
+
+      <div class="text-center boton_enviar">
+         <button type="submit" value="Enviar" name='enviar_servicio' class="btn btn-primary">Enviar</button>         
+      </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="debug">
+  <form action="" method="POST">
+        <label for="busqueda_servicio">Buscar por número de servicio:</label>
+        <input type="text" id="busqueda_servicio" name="busqueda_servicio">
+        <button type="submit">Buscar</button>
+
+        <?php
+include_once 'conexion.php';
+
+// Verificar si se ha enviado el formulario
+if(isset($_POST['busqueda_servicio'])) {
+    // Obtener el término de búsqueda ingresado por el usuario
+    $termino_busqueda = $_POST['busqueda_servicio'];
+
+    // Incluir la clase de conexión a la base de datos
+    $conexion = new Conexion();
+    $conn = $conexion->conexionDB();
+
+    try {
+        // Consulta SQL para buscar el servicio en la base de datos por la columna 'ser_orden'
+        $sql = "SELECT * FROM servicios WHERE ser_orden = :termino_busqueda";
+
+        // Preparar la consulta
+        $stmt = $conn->prepare($sql);
+
+        // Bind de parámetros
+        $stmt->bindParam(':termino_busqueda', $termino_busqueda);
+
+        // Ejecutar la consulta
+        $stmt->execute();
+
+        // Obtener los resultados de la consulta
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Cerrar la conexión a la base de datos
+        $conn = null;
+
+        // Mostrar los resultados
+        if(is_array($resultados) && count($resultados) > 0) {
+            echo "<h2>Resultados de la búsqueda:</h2>";
+            foreach($resultados as $resultado) {
+                echo "Orden Número: " . $resultado['ser_orden'] . "<br>";
+                echo "Año del Servicio: " .$resultado['ser_anio']. "<br>";
+                echo "Este servicio reemplaza la Orden: " .$resultado['ser_reemp_a']. "<br>";
+                echo "Servicio vigente desde: " .$resultado['ser_vigen_desde']. "<br>";
+                echo "Servicio vence el: " .$resultado['ser_vigen_hasta']. "<br>";
+                echo "El servicio se encuentra finalizado: " .$resultado['ser_finalizado']. "<br>";
+                echo "Titulo de la Orden de Servicio: " .$resultado['ser_titulo_orden']. "<br>";
+                echo "Misión del Servicio: " .$resultado['ser_mision']. "<br>";
+                echo "Lugar donde se desarrolla el Servicio: " .$resultado['ser_lugar']. "<br>";
+                echo "La problematica que atiende el Servicio: " .$resultado['ser_prob_atiende']. "<br>";
+                echo "Recursos afectados por el presente Servicio: " .$resultado['ser_anio']. "<br>";
+                echo "Responsable de la fiscalización del Servicio: " .$resultado['ser_func_respon']. "<br>";
+                
+            }
+        } else {
+            echo "No se encontraron resultados para el servicio con el número de orden: $termino_busqueda";
+        }
+    } catch(PDOException $e) {
+        echo "Error al realizar la búsqueda: " . $e->getMessage();
+    }
+}
+?>
+  </form>
+  </div>
+
+
+
+
+   </form>
+   
+
+</div>
+
+<!-- inicio modulo busqueda de servicio -->
+
+
+
+
+<!-- fin modulo busqueda de servicio -->
+  
+  <div>      
+      <footer class="footer fixed-bottom text-center">
+        <div class="containter">
+        <span class="text">Sitio diseñado por la División Apoyo y Seguimiento :: Dirección Analisís y Monitoreo Delictual</span>
+        </div>
+      </footer>
+  </div>
